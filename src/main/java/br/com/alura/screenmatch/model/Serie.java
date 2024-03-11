@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,7 +35,7 @@ public class Serie {
 	private String poster;
 	private String sinopse;
 
-	@OneToMany(mappedBy = "serie")
+	@OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Episodio> episodios = new ArrayList<>();
 
 	public Serie() {}
@@ -117,13 +119,15 @@ public class Serie {
 	}
 
 	public void setEpisodios(List<Episodio> episodios) {
+		episodios.forEach(e -> e.setSerie(this));
 		this.episodios = episodios;
+		
 	}
 
 	@Override
 	public String toString() {
 		return "Titulo -> " + titulo + "\nTemporadas -> " + totalTemporadas + "\navaliacao -> " + avaliacao
 				+ "\ngenero -> " + genero + "\natores -> " + atores + "\nposter -> " + poster + "\nsinopse -> "
-				+ sinopse + "\n\n";
+				+ sinopse + "\nEpisodios -> " + episodios + "\n\n";
 	}
 }
