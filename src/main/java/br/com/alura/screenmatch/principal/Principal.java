@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import br.com.alura.screenmatch.model.Categoria;
 import br.com.alura.screenmatch.model.DadosSerie;
 import br.com.alura.screenmatch.model.DadosTemporada;
 import br.com.alura.screenmatch.model.Episodio;
@@ -41,6 +42,8 @@ public class Principal {
 					3 - Listar series buscadas
 					4 - Buscar serie por titulo
 					5 - Buscar series por ator
+					6 - Top5 Series
+					7 - Buscar series por categoria
 
 					0 - Sair
 					""";
@@ -65,6 +68,12 @@ public class Principal {
 			case 5:
 				buscarSeriePorAtor();
 				break;
+			case 6:
+				buscarTopSeries();
+				break;
+			case 7:
+				buscarSeriesPorCategoria();
+				break;
 			case 0:
 				System.out.println("Saindo...");
 				break;
@@ -74,6 +83,21 @@ public class Principal {
 		}
 	}
 
+	private void buscarSeriesPorCategoria() {
+		System.out.println("Qual categoria voce deseja buscar? ");
+		String nomeGenero = leitura.nextLine();
+		Categoria categoria = Categoria.fromPortugues(nomeGenero);
+		List<Serie> seriePorCategoria = repositorio.findByGenero(categoria);
+		System.out.println("series da Categoria " + nomeGenero);
+		seriePorCategoria.forEach(System.out::println);
+	}
+
+	private void buscarTopSeries() {
+		List<Serie> serieTop = repositorio.findTop5ByOrderByAvaliacaoDesc();
+		serieTop.forEach(s -> System.out.println(s.getTitulo() + " avaliacao " + s.getAvaliacao()));
+		
+	}
+
 	private void buscarSeriePorAtor() {
 		System.out.println("Busque series pelo autor: ");
 		String nomeAtor = leitura.nextLine();
@@ -81,7 +105,7 @@ public class Principal {
 		double avaliacao = leitura.nextDouble(); 
 		List<Serie> seriesEncontradas = repositorio.findByAtoresContainingIgnoreCaseAndAvaliacaoGreaterThanEqual(nomeAtor, avaliacao);
 		System.out.println("Series em que " + nomeAtor + " trabalhou");
-		seriesEncontradas.forEach(s -> System.out.println(s.getTitulo() + "\n avaliacao " + s.getAvaliacao()));
+		seriesEncontradas.forEach(s -> System.out.println(s.getTitulo() + " avaliacao:  " + s.getAvaliacao()));
 
 	}
 
